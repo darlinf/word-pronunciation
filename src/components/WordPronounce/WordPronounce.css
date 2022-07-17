@@ -1,0 +1,48 @@
+.text-show {
+  margin: 20px;
+  background-color: green;
+  width: fit-content;
+}
+
+.word p {
+  margin-right: 5px;
+}
+
+.word button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10%;
+}
+
+.pronounce button {
+  cursor: pointer;
+  border-radius: 10%;
+  border: none;
+}
+
+.word {
+  display: flex;
+  background-color: green;
+  width: 70px;
+  padding: 10px;
+  color: rgb(231, 230, 230);
+  margin-bottom: 5px;
+  font-size: 30px;
+  width: fit-content;
+}
+.pronounce p {
+  margin-left: 5px;
+  font-size: 30px;
+}
+.pronounce {
+  padding: 10px;
+  display: flex;
+  background-color: red;
+  width: fit-content;
+  color: rgb(231, 230, 230);
+}
+
+.edit-text-container input {
+  margin-left: 5px;
+  width: 50px;
+}
