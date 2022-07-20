@@ -8,16 +8,19 @@ export default function NewWord() {
   const { setWord } = useContext(WordContext);
 
   const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const uniqueWord = event.target[0].value.split(" ");
+
     wordService
-      .getWordByWord(event.target[0].value)
+      .getWordByWord(uniqueWord.toString().replace(/,/g, " "))
       .then((data) => {
-        console.log(data);
+        setWord([]);
+        setWord(data);
       })
       .catch((error) => {
         console.error(error);
       });
-    event.preventDefault();
-    setWord(event.target[0].value.split(" "));
   };
   return (
     <div className="form-container">

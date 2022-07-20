@@ -5,7 +5,7 @@ const apiUrl = "http://localhost:8081/";
 export const wordService = {
   getWordByWord,
   editWord,
-  createSchema,
+  createWord,
 };
 
 function getWordByWord(param) {
@@ -20,9 +20,9 @@ function getWordByWord(param) {
     });
 }
 
-function editWord(id) {
+function editWord(id, param) {
   return axios
-    .put(`${apiUrl}word/editWord/${id}`)
+    .put(`${apiUrl}word/editWord/${id}`, param)
     .then((response) => {
       return response.data;
     })
@@ -31,7 +31,7 @@ function editWord(id) {
     });
 }
 
-function createSchema(param) {
+function createWord(param) {
   return axios
     .post(`${apiUrl}word/createWord`, param)
     .then(function (response) {

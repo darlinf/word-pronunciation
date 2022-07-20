@@ -1,48 +1,34 @@
-.text-show {
-  margin: 20px;
-  background-color: green;
-  width: fit-content;
-}
-
-.word p {
-  margin-right: 5px;
-}
-
-.word button {
+.text-show-result svg {
   cursor: pointer;
-  border: none;
-  border-radius: 10%;
 }
 
-.pronounce button {
-  cursor: pointer;
-  border-radius: 10%;
-  border: none;
+.text-show-result {
+  font-size: 17px;
+  fill: white;
+}
+
+.pronounce {
+  height: 40px;
+  background-color: red;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .word {
-  display: flex;
+  height: 40px;
   background-color: green;
-  width: 70px;
-  padding: 10px;
-  color: rgb(231, 230, 230);
-  margin-bottom: 5px;
-  font-size: 30px;
-  width: fit-content;
-}
-.pronounce p {
-  margin-left: 5px;
-  font-size: 30px;
-}
-.pronounce {
-  padding: 10px;
   display: flex;
-  background-color: red;
-  width: fit-content;
-  color: rgb(231, 230, 230);
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.edit-text-container {
+  display: flex;
+  justify-content: center;
 }
 
 .edit-text-container input {
-  margin-left: 5px;
-  width: 50px;
+  width: 90%;
 }
