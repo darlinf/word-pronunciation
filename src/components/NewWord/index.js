@@ -17,6 +17,7 @@ export default function NewWord() {
       .then((data) => {
         setWord([]);
         setWord(data);
+        console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -25,7 +26,8 @@ export default function NewWord() {
   return (
     <div className="form-container">
       <form action="" onSubmit={handleSubmit}>
-        <textarea rows="1"></textarea>
+        {/* <textarea rows="1"></textarea>*/}
+        <input type="text" placeholder="words"></input>
         <button>Ok</button>
       </form>
     </div>

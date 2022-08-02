@@ -17,3 +17,19 @@
 .form-container textarea {
   height: 40px;
 }
+
+.form-container > form {
+  margin: 10px;
+}
+
+.form-container > form > input {
+  width: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.267);
+  border-radius: 5px;
+}
+
+.form-container > form > button {
+  border-radius: 2px;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.267);
+}

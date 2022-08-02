@@ -1,9 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap");
+
+* {
+  font-family: "Roboto", sans-serif !important;
+}
+
+.pronounce-container > div {
+  display: inline-block;
+  margin: 10px;
+}
+
+.pronounce-container {
+  /*background-color: rebeccapurple;*/
+  border-radius: 0 0 5px 5px;
+}
+/*
 :root {
   --gridList-column: 150px;
   --gridList-rows: 150px;
   --gridList-gap: 6px;
 }
-
 .pronounce-container {
   display: grid;
   height: 60vh;
@@ -17,19 +32,22 @@
   align-items: center;
 
   background-color: rebeccapurple;
-}
+}*/
 
 .sentence-main-container {
   display: flex;
   justify-content: center;
 }
 
+.header-pronounce h2 {
+  align-self: center;
+}
 .header-pronounce {
   background-color: #161b22;
   display: flex;
   justify-content: space-between;
   padding: 10px 10px;
-  border: #30363d solid 1px;
+  border-radius: 5px 5px 0 0;
 }
 
 .header-pronounce svg {

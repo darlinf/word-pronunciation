@@ -7,6 +7,8 @@ import { ReactComponent as Synchronization } from "../../assets/svg/iconmonstr-s
 import { useState, useMemo } from "react";
 
 import { wordService } from "./../../_services/word.service";
+import { useContext } from "react";
+import ThemeContext from "../../context/ThemeContext";
 
 let wordExist = false;
 
@@ -14,6 +16,8 @@ export default function WordPronounce({ word, pronounce, id }) {
   const [edit, setEdit] = useState(pronounce === "");
   const [inputText, setInputText] = useState(pronounce);
   const [loading, setLoading] = useState(false);
+
+  const { theme } = useContext(ThemeContext);
 
   wordExist = useMemo(() => (id === undefined ? false : true), [id]);
 
@@ -81,7 +85,7 @@ export default function WordPronounce({ word, pronounce, id }) {
   };
 
   return (
-    <div className="text-show-result">
+    <div className="text-show-result" style={theme.textShowResult}>
       <div className="word">
         <p>{word}</p>
         <Sound className="sound" onClick={() => speak(word)}></Sound>
@@ -93,6 +97,7 @@ export default function WordPronounce({ word, pronounce, id }) {
         <div className="edit-text-container">
           {edit ? (
             <input
+              placeholder="pronounce"
               type="text"
               onChange={(event) => setInputText(event.target.value)}
               value={inputText}
