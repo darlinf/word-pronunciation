@@ -2,6 +2,7 @@ import "./home.css";
 import WordPronounce from "../components/WordPronounce";
 import NewWord from "../components/NewWord";
 import ToggleTheme from "../components/ToggleTheme";
+import Setting from "../components/Setting";
 import { ReactComponent as Clipboard } from "./../assets/svg/iconmonstr-clipboard-13.svg";
 
 import { useContext } from "react";
@@ -44,6 +45,9 @@ function Home() {
           <Clipboard onClick={copyPronounceText}></Clipboard>
           <div style={{ marginLeft: 5 }}>
             <ToggleTheme />
+          </div>
+          <div style={{ marginLeft: 5 }}>
+            <Setting />
           </div>
         </div>
       </div>

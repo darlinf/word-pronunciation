@@ -9,6 +9,7 @@ import { useState, useMemo } from "react";
 import { wordService } from "./../../_services/word.service";
 import { useContext } from "react";
 import ThemeContext from "../../context/ThemeContext";
+import SettingContext from "../../context/SettingContext";
 
 let wordExist = false;
 
@@ -18,6 +19,9 @@ export default function WordPronounce({ word, pronounce, id }) {
   const [loading, setLoading] = useState(false);
 
   const { theme } = useContext(ThemeContext);
+  const { setting } = useContext(SettingContext);
+
+  console.log(setting);
 
   wordExist = useMemo(() => (id === undefined ? false : true), [id]);
 
@@ -88,7 +92,10 @@ export default function WordPronounce({ word, pronounce, id }) {
     <div className="text-show-result" style={theme.textShowResult}>
       <div className="word">
         <p>{word}</p>
-        <Sound className="sound" onClick={() => speak(word)}></Sound>
+        <Sound
+          className="sound"
+          onClick={() => speak(word, setting.pitch, setting.rate, setting.lang)}
+        ></Sound>
       </div>
 
       <div className="pronounce">
@@ -115,9 +122,9 @@ export default function WordPronounce({ word, pronounce, id }) {
 
 function speak(
   textToSpeak = "hello",
-  voice = "Google US English",
   pitchV = 0.7,
-  rateV = 0.5
+  rateV = 0.5,
+  voice = "Google US English"
 ) {
   const synth = window.speechSynthesis;
   if (synth.speaking) {

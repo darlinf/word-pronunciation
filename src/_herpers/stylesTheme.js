@@ -3,9 +3,6 @@ const styles = {
     body: () => {
       document.body.style = "background:#303030";
       document.body.style = "transition: all 800ms ease";
-      /*setTimeout(() => {
-        document.body.style = "transition: none";
-      }, 1000);*/
     },
     pronounceContainer: {
       background: "#444444",

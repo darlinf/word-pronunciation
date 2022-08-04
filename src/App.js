@@ -1,6 +1,7 @@
 import "./App.css";
 import Home from "./page/home";
 import { WordContextProvider } from "./context/WordContext";
+import { SettingContextProvider } from "./context/SettingContext";
 
 import { useContext, useEffect } from "react";
 import ThemeContext from "./context/ThemeContext";
@@ -26,7 +27,9 @@ function App() {
   return (
     <div>
       <WordContextProvider>
-        <Home></Home>
+        <SettingContextProvider>
+          <Home></Home>
+        </SettingContextProvider>
       </WordContextProvider>
     </div>
   );
