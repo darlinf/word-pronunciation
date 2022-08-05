@@ -1,8 +1,8 @@
 import "./NewWord.css";
 import { useContext } from "react";
-import WordContext from "../../context/WordContext";
+import WordContext from "../context/WordContext";
 
-import { wordService } from "./../../_services/word.service";
+import { wordService } from "../_services/word.service";
 
 export default function NewWord() {
   const { setWord } = useContext(WordContext);
@@ -26,7 +26,6 @@ export default function NewWord() {
   return (
     <div className="form-container">
       <form action="" onSubmit={handleSubmit}>
-        {/* <textarea rows="1"></textarea>*/}
         <input type="text" placeholder="words"></input>
         <button>Ok</button>
       </form>

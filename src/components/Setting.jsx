@@ -1,19 +1,16 @@
 import { useState } from "react";
-import { ReactComponent as SettingIcon } from "../../assets/svg/setting.svg";
-import { ReactComponent as CloseIcon } from "../../assets/svg/close.svg";
-
-import ThemeContext from "../../context/ThemeContext";
-import SettingContext from "../../context/SettingContext";
+import { ReactComponent as SettingIcon } from "../assets/svg/setting.svg";
+import { ReactComponent as CloseIcon } from "../assets/svg/close.svg";
+import ThemeContext from "../context/ThemeContext";
+import SettingContext from "../context/SettingContext";
 import { useContext } from "react";
-
+import populateVoiceList from "../_herpers/populateVoiceList";
 import "./Setting.css";
 
 export default function Setting() {
   const [showSetting, setShowSetting] = useState(false);
   const { theme } = useContext(ThemeContext);
-
   const { setSetting, setting } = useContext(SettingContext);
-
   const [voiceList, setVoiceList] = useState([]);
 
   populateVoiceList((voices) => {
@@ -114,26 +111,4 @@ export default function Setting() {
       }
     </div>
   );
-}
-
-function populateVoiceList(callback) {
-  const callBackEvent = () => {
-    const voicesList = window.speechSynthesis.getVoices().sort(function (a, b) {
-      const aname = a.name.toUpperCase();
-      const bname = b.name.toUpperCase();
-
-      if (aname < bname) {
-        return -1;
-      } else if (aname === bname) {
-        return 0;
-      } else {
-        return +1;
-      }
-    });
-    callback(voicesList);
-  };
-
-  if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = callBackEvent;
-  }
 }

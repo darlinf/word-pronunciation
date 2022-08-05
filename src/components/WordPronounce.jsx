@@ -1,15 +1,19 @@
 import "./WordPronounce.css";
-import { ReactComponent as Sound } from "../../assets/svg/iconmonstr-sound-thin.svg";
-import { ReactComponent as Pencil } from "../../assets/svg/iconmonstr-pencil-thin.svg";
-import { ReactComponent as Mark } from "../../assets/svg/iconmonstr-check-mark-17.svg";
-import { ReactComponent as Save } from "../../assets/svg/iconmonstr-save.svg";
-import { ReactComponent as Synchronization } from "../../assets/svg/iconmonstr-synchronization.svg";
+import { ReactComponent as Sound } from "../assets/svg/iconmonstr-sound-thin.svg";
+import { ReactComponent as Pencil } from "../assets/svg/iconmonstr-pencil-thin.svg";
+import { ReactComponent as Mark } from "../assets/svg/iconmonstr-check-mark-17.svg";
+import { ReactComponent as Save } from "../assets/svg/iconmonstr-save.svg";
+import { ReactComponent as Microphone } from "../assets/svg/microphone.svg";
+import { ReactComponent as Synchronization } from "../assets/svg/iconmonstr-synchronization.svg";
 import { useState, useMemo } from "react";
 
-import { wordService } from "./../../_services/word.service";
+import { wordService } from "../_services/word.service";
 import { useContext } from "react";
-import ThemeContext from "../../context/ThemeContext";
-import SettingContext from "../../context/SettingContext";
+import ThemeContext from "../context/ThemeContext";
+import SettingContext from "../context/SettingContext";
+
+import speak from "../_herpers/speak";
+import recogniseVoice from "../_herpers/recogniseVoice";
 
 let wordExist = false;
 
@@ -20,6 +24,8 @@ export default function WordPronounce({ word, pronounce, id }) {
 
   const { theme } = useContext(ThemeContext);
   const { setting } = useContext(SettingContext);
+
+  const [recoding, setRecoding] = useState(null);
 
   console.log(setting);
 
@@ -41,6 +47,7 @@ export default function WordPronounce({ word, pronounce, id }) {
       });
   };
 
+  ///////////////////////////
   const editWord = (element) => {
     setLoading(true);
     wordService
@@ -52,6 +59,7 @@ export default function WordPronounce({ word, pronounce, id }) {
         console.error(error);
       });
   };
+  //////////////////////////
 
   const handlerCreateAndEditWord = () => {
     if (inputText !== pronounce) {
@@ -92,11 +100,53 @@ export default function WordPronounce({ word, pronounce, id }) {
     <div className="text-show-result" style={theme.textShowResult}>
       <div className="word">
         <p>{word}</p>
-        <Sound
-          className="sound"
-          onClick={() => speak(word, setting.pitch, setting.rate, setting.lang)}
-        ></Sound>
+        <div
+          style={{ marginLeft: 5, display: "flex", width: recoding ? 30 : 60 }}
+        >
+          <Sound
+            className="sound"
+            onClick={() =>
+              speak(word, setting.pitch, setting.rate, setting.lang)
+            }
+          ></Sound>
+          {!recoding && (
+            <Microphone
+              onClick={() => {
+                console.log(recoding);
+                setRecoding("...");
+                recogniseVoice((e) => {
+                  setRecoding(e);
+                  alert(e);
+                });
+              }}
+            ></Microphone>
+          )}
+        </div>
       </div>
+      {recoding && (
+        <div
+          style={{
+            width: "90%",
+            height: 40,
+            display: "flex",
+            paddingLeft: 10,
+            paddingRight: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <p>{recoding}</p>
+          <Microphone
+            onClick={() => {
+              console.log(recoding);
+              setRecoding("...");
+              recogniseVoice((e) => {
+                setRecoding(e);
+                alert(e);
+              });
+            }}
+          ></Microphone>
+        </div>
+      )}
 
       <div className="pronounce">
         <EditSave />
@@ -118,42 +168,4 @@ export default function WordPronounce({ word, pronounce, id }) {
       </div>
     </div>
   );
-}
-
-function speak(
-  textToSpeak = "hello",
-  pitchV = 0.7,
-  rateV = 0.5,
-  voice = "Google US English"
-) {
-  const synth = window.speechSynthesis;
-  if (synth.speaking) {
-    console.error("speechSynthesis.speaking");
-    return;
-  }
-
-  if (textToSpeak !== "") {
-    const utterThis = new SpeechSynthesisUtterance(textToSpeak);
-
-    utterThis.onend = function (event) {
-      console.log("SpeechSynthesisUtterance.onend");
-    };
-
-    utterThis.onerror = function (event) {
-      console.error("SpeechSynthesisUtterance.onerror");
-    };
-
-    let voices = synth.getVoices();
-
-    for (let i = 0; i < voices.length; i++) {
-      if (voices[i].name === voice) {
-        utterThis.voice = voices[i];
-        break;
-      }
-    }
-
-    utterThis.pitch = pitchV;
-    utterThis.rate = rateV;
-    synth.speak(utterThis);
-  }
 }

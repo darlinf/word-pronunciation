@@ -1,10 +1,10 @@
 import "./ToggleTheme.css";
 import { useContext } from "react";
-import ThemeContext from "../../context/ThemeContext";
-import styles from "../../_herpers/stylesTheme";
+import ThemeContext from "../context/ThemeContext";
+import styles from "../_herpers/stylesTheme";
 
-import { ReactComponent as Moon } from "../../assets/svg/moon.svg";
-import { ReactComponent as Sun } from "../../assets/svg/sun.svg";
+import { ReactComponent as Moon } from "../assets/svg/moon.svg";
+import { ReactComponent as Sun } from "../assets/svg/sun.svg";
 
 let currentTheme = localStorage.getItem("theme");
 
