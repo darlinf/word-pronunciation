@@ -116,7 +116,6 @@ export default function WordPronounce({ word, pronounce, id }) {
                 setRecoding("...");
                 recogniseVoice((e) => {
                   setRecoding(e);
-                  alert(e);
                 });
               }}
             ></Microphone>
@@ -141,7 +140,6 @@ export default function WordPronounce({ word, pronounce, id }) {
               setRecoding("...");
               recogniseVoice((e) => {
                 setRecoding(e);
-                alert(e);
               });
             }}
           ></Microphone>
