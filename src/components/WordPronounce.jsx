@@ -5,7 +5,7 @@ import { ReactComponent as Mark } from "../assets/svg/iconmonstr-check-mark-17.s
 import { ReactComponent as Save } from "../assets/svg/iconmonstr-save.svg";
 import { ReactComponent as Microphone } from "../assets/svg/microphone.svg";
 import { ReactComponent as Synchronization } from "../assets/svg/iconmonstr-synchronization.svg";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import { wordService } from "../_services/word.service";
 import { useContext } from "react";
@@ -35,6 +35,11 @@ export default function WordPronounce({ word, pronounce, id }) {
     word: word,
     pronounce: inputText,
   };
+
+  useEffect(() => {
+    setInputText(pronounce);
+    setEdit(pronounce === "");
+  }, [pronounce]);
 
   const createWort = (element) => {
     wordService

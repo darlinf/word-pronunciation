@@ -1,10 +1,15 @@
 import "./App.css";
 import Home from "./page/home";
+import SentencePronounce from "./page/sentencePronounce";
 import { WordContextProvider } from "./context/WordContext";
 import { SettingContextProvider } from "./context/SettingContext";
 
 import { useContext, useEffect } from "react";
 import ThemeContext from "./context/ThemeContext";
+
+import { Routes, Route } from "react-router-dom";
+
+import NavBar from "./components/NavBar";
 
 import styles from "./_herpers/stylesTheme";
 
@@ -26,9 +31,13 @@ function App() {
 
   return (
     <div>
+      <NavBar />
       <WordContextProvider>
         <SettingContextProvider>
-          <Home></Home>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/sentence-pronounce" element={<SentencePronounce />} />
+          </Routes>
         </SettingContextProvider>
       </WordContextProvider>
     </div>

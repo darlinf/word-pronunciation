@@ -1,0 +1,26 @@
+.sentenc-main-container {
+  background-color: royalblue;
+  border-radius: 5px;
+}
+
+.form-sentence-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.sentence-container {
+  display: flex;
+  align-items: center;
+  margin: 7px 0;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.microphone-container {
+  display: flex;
+  display: flex;
+  align-items: center;
+  margin: 7px 0;
+  justify-content: space-between;
+  padding: 5px;
+}

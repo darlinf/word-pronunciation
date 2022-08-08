@@ -1,7 +1,8 @@
 .form-container {
   display: flex;
   justify-content: center;
-  margin-top: 20vh;
+  margin-top: 5vh;
+  margin-bottom: 7px;
 }
 
 .form-container form {
@@ -11,7 +12,7 @@
 .form-container button {
   cursor: pointer;
   margin-left: 10px;
-  height: 100%;
+  height: 34px;
 }
 
 .form-container textarea {
@@ -22,7 +23,8 @@
   margin: 10px;
 }
 
-.form-container > form > input {
+.form-container > form input {
+  height: 30px;
   width: 200px;
   border: 1px solid rgba(0, 0, 0, 0.267);
   border-radius: 5px;
@@ -32,4 +34,16 @@
   border-radius: 2px;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.267);
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+}
+.error small {
+  font-size: 14px;
+  color: red;
+  position: absolute;
+  top: 93px;
+  padding-left: 2px;
 }
