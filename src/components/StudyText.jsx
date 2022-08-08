@@ -13,8 +13,12 @@ export default function StudyText() {
 
   const handlePasteText = () => {
     navigator.clipboard.readText().then((text) => {
-      setPasteText(text.split("\n"));
-      console.log(pasteText);
+      setPasteText(
+        text.split("\n").filter((x) => {
+          if (x === "\r" || x === "") return false;
+          return true;
+        })
+      );
     });
   };
 

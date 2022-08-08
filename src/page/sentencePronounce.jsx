@@ -1,24 +1,36 @@
 import "./sentencePronounce.css";
-import { useState } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import recogniseVoice from "../_herpers/recogniseVoice";
 import { ReactComponent as Sound } from "../assets/svg/iconmonstr-sound-thin.svg";
 import { ReactComponent as Microphone } from "../assets/svg/microphone.svg";
 import speak from "../_herpers/speak";
+import ThemeContext from "../context/ThemeContext";
+import StudyTextContext from "../context/StudyTextContext";
 
 export default function SentencePronounce() {
   const [sentence, setSentence] = useState("");
   const [recoding, setRecoding] = useState(null);
+  const { studyText } = useContext(StudyTextContext);
+  const { theme } = useContext(ThemeContext);
+
+  const input = useRef();
+
+  useEffect(() => {
+    input.current.value = studyText;
+    if (studyText) setStydySentence(studyText);
+  }, [studyText]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setStydySentence(event.target[0].value);
+  };
 
-    const uniqueWord = event.target[0].value
+  const setStydySentence = (param) => {
+    const uniqueWord = param
       .split(/[\W-\d]/g)
       .filter((x) => x !== "")
       .toString()
       .replace(/,/g, " ");
-
-    console.log(uniqueWord);
 
     if (uniqueWord === "") {
       setSentence(null);
@@ -27,19 +39,20 @@ export default function SentencePronounce() {
 
     setSentence(uniqueWord);
   };
+
   return (
     <div style={{ width: "90%", margin: "auto" }}>
       <div className="form-container">
         <form action="" onSubmit={handleSubmit}>
           <div className="error ">
-            <input type="text" placeholder="sentence"></input>
+            <input type="text" ref={input} placeholder="sentence"></input>
             {sentence === null && <small>please enter word or sentence</small>}
           </div>
           <button>Ok</button>
         </form>
       </div>
       {sentence && (
-        <div className="sentenc-main-container">
+        <div className="sentenc-main-container" style={theme.headerPronounce}>
           <div className="sentence-container">
             <p>{sentence}</p>
             <Sound
@@ -59,7 +72,7 @@ export default function SentencePronounce() {
                 });
               }}
             />
-            <p>{recoding || <p>“________________________”</p>}</p>
+            <div>{recoding || <p>“________________________”</p>}</div>
           </div>
         </div>
       )}

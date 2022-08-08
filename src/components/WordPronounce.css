@@ -14,7 +14,6 @@
 
 .pronounce {
   height: 40px;
-  /*background-color: red;*/
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,7 +21,6 @@
 
 .word {
   height: 40px;
-  /*background-color: green;*/
   display: flex;
   justify-content: space-between;
   align-items: center;
