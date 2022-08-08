@@ -10,7 +10,6 @@ export const wordService = {
 };
 
 function getWordByWord(param) {
-  console.log(`${apiUrl}word/getWordBy/${param}`);
   return axios
     .get(`${apiUrl}word/getWordBy/${param}`)
     .then((response) => {

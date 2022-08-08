@@ -9,6 +9,7 @@ const styles = {
     },
     headerPronounce: { background: "#0D47A1" },
     textShowResult: { background: "#0c0c0c6b" },
+    textColor: { color: "white" },
   },
 
   white: {
@@ -20,6 +21,7 @@ const styles = {
     pronounceContainer: { background: "#e6e6e6b0" },
     headerPronounce: { background: "#1976D2" },
     textShowResult: { background: "#3b8ad9af" },
+    textColor: { color: "black" },
   },
 };
 

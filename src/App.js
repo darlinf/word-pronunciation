@@ -12,6 +12,8 @@ import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 
 import styles from "./_herpers/stylesTheme";
+import StudyText from "./components/StudyText";
+import { StudyTextContextProvider } from "./context/StudyTextContext";
 
 let currentTheme = localStorage.getItem("theme");
 
@@ -31,15 +33,21 @@ function App() {
 
   return (
     <div>
-      <NavBar />
-      <WordContextProvider>
-        <SettingContextProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sentence-pronounce" element={<SentencePronounce />} />
-          </Routes>
-        </SettingContextProvider>
-      </WordContextProvider>
+      <StudyTextContextProvider>
+        <NavBar />
+        <StudyText />
+        <WordContextProvider>
+          <SettingContextProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/sentence-pronounce"
+                element={<SentencePronounce />}
+              />
+            </Routes>
+          </SettingContextProvider>
+        </WordContextProvider>
+      </StudyTextContextProvider>
     </div>
   );
 }

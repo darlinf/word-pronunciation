@@ -20,12 +20,6 @@ function Home() {
   const createdClipboardText = () => {
     let textToClipboard = "";
 
-    /*word.forEach((element) => {
-      textToClipboard += element.word + " ";
-    });
-
-    textToClipboard += "\n ";*/
-
     word.forEach((element) => {
       textToClipboard += element.pronounce + "_";
     });
@@ -33,7 +27,7 @@ function Home() {
   };
 
   return (
-    <div style={{ margin: 30 }}>
+    <div style={{ width: "90%", margin: "auto" }}>
       <NewWord></NewWord>
       <div className="header-pronounce" style={theme.headerPronounce}>
         <h2>Pronounce result</h2>

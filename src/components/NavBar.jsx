@@ -1,13 +1,17 @@
 import "./NavBar.css";
 import { NavLink } from "react-router-dom";
+import ThemeContext from "../context/ThemeContext";
+import { useContext } from "react";
 
 export default function NavBar() {
+  const { theme } = useContext(ThemeContext);
+
   return (
     <div className="nav-bar-container">
       <ul>
         <li>
           <NavLink
-            style={{ color: "white" }}
+            style={theme.textColor}
             to="/"
             className={({ isActive }) => (isActive ? "nav-link-active" : "")}
           >
@@ -17,7 +21,7 @@ export default function NavBar() {
 
         <li>
           <NavLink
-            style={{ color: "white" }}
+            style={theme.textColor}
             to="/sentence-pronounce"
             className={({ isActive }) => (isActive ? "nav-link-active" : "")}
           >

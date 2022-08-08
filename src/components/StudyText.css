@@ -1,0 +1,42 @@
+.study-text-item {
+  margin: 5px;
+  background-color: rebeccapurple;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.study-text-item-container {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+.study-text-container > button {
+  margin: 5px;
+}
+.study-text-container {
+  border-radius: 5px;
+  background-color: rebeccapurple;
+  width: 90%;
+
+  margin: auto;
+  margin-top: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: gainsboro;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
