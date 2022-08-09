@@ -1,0 +1,23 @@
+.nav-bar-container {
+  display: flex;
+  justify-content: center;
+  height: 60px;
+  align-items: center;
+  font-size: 16px;
+}
+
+.nav-bar-container > ul {
+  display: flex;
+}
+
+.nav-bar-container > ul :nth-child(1) {
+  margin-right: 8px;
+}
+
+.nav-link-active {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+
+  transition: all 10ms ease;
+}

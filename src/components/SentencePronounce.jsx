@@ -1,13 +1,13 @@
 import { useContext, useRef, useState } from "react";
-import "./StudyText.css";
-import StudyTextContext from "../context/StudyTextContext";
+import "./SentencePronounce.css";
+import SentenceContext from "../context/SentenceContext";
 import ThemeContext from "../context/ThemeContext";
 
 let lastIndex = undefined;
 
-export default function StudyText() {
+export default function SentencePronounce() {
   const [pasteText, setPasteText] = useState([]);
-  const { setStudyText } = useContext(StudyTextContext);
+  const { setStudyText } = useContext(SentenceContext);
   const { theme } = useContext(ThemeContext);
   const listOfPronounce = useRef();
 

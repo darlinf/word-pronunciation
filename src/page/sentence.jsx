@@ -1,16 +1,16 @@
-import "./sentencePronounce.css";
+import "./sentence.css";
 import { useState, useContext, useEffect, useRef } from "react";
 import recogniseVoice from "../_herpers/recogniseVoice";
 import { ReactComponent as Sound } from "../assets/svg/iconmonstr-sound-thin.svg";
 import { ReactComponent as Microphone } from "../assets/svg/microphone.svg";
 import speak from "../_herpers/speak";
 import ThemeContext from "../context/ThemeContext";
-import StudyTextContext from "../context/StudyTextContext";
+import SentenceContext from "../context/SentenceContext";
 
-export default function SentencePronounce() {
+export default function Sentence() {
   const [sentence, setSentence] = useState("");
   const [recoding, setRecoding] = useState(null);
-  const { studyText } = useContext(StudyTextContext);
+  const { studyText } = useContext(SentenceContext);
   const { theme } = useContext(ThemeContext);
 
   const input = useRef();

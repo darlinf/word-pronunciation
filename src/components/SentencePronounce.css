@@ -3,6 +3,7 @@
   background-color: rebeccapurple;
   padding: 5px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .study-text-item-container {
@@ -21,6 +22,10 @@
   margin-top: 10px;
 }
 
+.study-text-container > button {
+  cursor: pointer;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -28,11 +33,13 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
+  border-radius: 5px;
   background: gainsboro;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
   background: #888;
 }
 

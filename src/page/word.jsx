@@ -1,6 +1,6 @@
-import "./home.css";
+import "./word.css";
 import WordPronounce from "../components/WordPronounce";
-import NewWord from "../components/NewWord";
+import InsertWords from "../components/InsertWords";
 import ToggleTheme from "../components/ToggleTheme";
 import Setting from "../components/Setting";
 import { ReactComponent as Clipboard } from "./../assets/svg/iconmonstr-clipboard-13.svg";
@@ -8,10 +8,16 @@ import { ReactComponent as Clipboard } from "./../assets/svg/iconmonstr-clipboar
 import { useContext } from "react";
 import WordContext from "../context/WordContext";
 import ThemeContext from "../context/ThemeContext";
+import WordOrSentenceContext from "../context/WordOrSentenceContext";
+import InsertSentences from "../components/InsertSentences";
+import SentenceAndPronounce from "../components/SentenceAndPronounce";
 
 function Home() {
   const { word } = useContext(WordContext);
   const { theme } = useContext(ThemeContext);
+  const { choiceWordSentence } = useContext(WordOrSentenceContext);
+
+  console.log(word);
 
   const copyPronounceText = () => {
     navigator.clipboard.writeText(createdClipboardText());
@@ -28,12 +34,17 @@ function Home() {
 
   return (
     <div style={{ width: "90%", margin: "auto" }}>
-      <NewWord></NewWord>
       <div className="header-pronounce" style={theme.headerPronounce}>
-        <h2>Pronounce result</h2>
+        {choiceWordSentence === "word" ? (
+          <InsertWords></InsertWords>
+        ) : (
+          <InsertSentences></InsertSentences>
+        )}
+
         <div
           style={{
             display: "flex",
+            alignItems: "center",
           }}
         >
           <Clipboard onClick={copyPronounceText}></Clipboard>
@@ -46,17 +57,23 @@ function Home() {
         </div>
       </div>
       <div className="pronounce-container" style={theme.pronounceContainer}>
-        {word?.map((x, index) => {
-          return (
-            <div key={index}>
-              <WordPronounce
-                word={x.word}
-                pronounce={x.pronounce}
-                id={x.id}
-              ></WordPronounce>
-            </div>
-          );
-        })}
+        {choiceWordSentence === "word" ? (
+          <>
+            {word?.map((x, index) => {
+              return (
+                <div key={index}>
+                  <WordPronounce
+                    word={x.word}
+                    pronounce={x.pronounce}
+                    id={x.id}
+                  ></WordPronounce>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <SentenceAndPronounce></SentenceAndPronounce>
+        )}
       </div>
     </div>
   );

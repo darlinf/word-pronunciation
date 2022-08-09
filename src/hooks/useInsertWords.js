@@ -1,15 +1,14 @@
-import "./NewWord.css";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import WordContext from "../context/WordContext";
 
-import StudyTextContext from "../context/StudyTextContext";
+import SentenceContext from "../context/SentenceContext";
 
 import { wordService } from "../_services/word.service";
 
-export default function NewWord() {
+export default function useInsertWords() {
   const { setWord } = useContext(WordContext);
   const [inputError, setInputError] = useState(false);
-  const { studyText } = useContext(StudyTextContext);
+  const { studyText } = useContext(SentenceContext);
 
   const input = useRef();
 
@@ -51,15 +50,5 @@ export default function NewWord() {
     getWord(event.target[0].value);
   };
 
-  return (
-    <div className="form-container">
-      <form action="" onSubmit={handleSubmit}>
-        <div className="error ">
-          <input type="text" ref={input} placeholder="words"></input>
-          {inputError && <small>please enter word or sentence</small>}
-        </div>
-        <button>Ok</button>
-      </form>
-    </div>
-  );
+  return { inputError, input, handleSubmit };
 }

@@ -22,7 +22,7 @@ export default function NavBar() {
         <li>
           <NavLink
             style={theme.textColor}
-            to="/sentence-pronounce"
+            to="/sentence"
             className={({ isActive }) => (isActive ? "nav-link-active" : "")}
           >
             Sentence pronounce

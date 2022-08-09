@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const Context = React.createContext({});
 
-export function StudyTextContextProvider({ children }) {
+export function SentenceContextProvider({ children }) {
   const [studyText, setStudyText] = useState(null);
 
   return (
