@@ -5,6 +5,8 @@ import speak from "../_herpers/speak";
 import { useState, useContext } from "react";
 import ThemeContext from "../context/ThemeContext";
 import SentenceContext from "../context/SentenceContext";
+import "./SentenceAndPronounce.css";
+import SetShowWordPronounceWord from "../components/SentencePronounceWord";
 
 export default function SentenceAndPronounce() {
   const [recoding, setRecoding] = useState(null);
@@ -16,7 +18,11 @@ export default function SentenceAndPronounce() {
       {studyText && (
         <div className="sentenc-main-container" style={theme.textShowResult}>
           <div className="sentence-container">
-            <p>{studyText}</p>
+            <div className="sentence-word-container">
+              {studyText.split(" ").map((x, index) => (
+                <SetShowWordPronounceWord key={index} word={x} />
+              ))}
+            </div>
             <Sound
               style={{ fill: "white", cursor: "pointer" }}
               className="sound"

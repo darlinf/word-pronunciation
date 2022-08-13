@@ -23,7 +23,7 @@ export default function SentencePronounce() {
   };
 
   const selectItem = (index) => {
-    if (lastIndex !== undefined) {
+    if (lastIndex !== undefined && pasteText.length !== 1) {
       listOfPronounce.current.children[lastIndex].style =
         "background: " + theme.textShowResult.background;
     }

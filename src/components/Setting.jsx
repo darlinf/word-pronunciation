@@ -69,7 +69,6 @@ export default function Setting() {
                 step="0.1"
               />
               <div className="rate-value">{setting.rate}</div>
-              <div className="clearfix"></div>
             </div>
             <div className="pitch">
               <label>Pitch</label>
@@ -84,7 +83,6 @@ export default function Setting() {
                 step="0.1"
               />
               <div className="pitch-value">{setting.pitch}</div>
-              <div className="clearfix"></div>
             </div>
             <select
               onChange={(e) => {

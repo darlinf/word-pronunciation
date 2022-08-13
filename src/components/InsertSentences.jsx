@@ -1,12 +1,10 @@
 import "./InsertSentences.css";
 import { useState, useContext, useEffect, useRef, useCallback } from "react";
-//import ThemeContext from "../context/ThemeContext";
 import SentenceContext from "../context/SentenceContext";
 
 export default function InsertSentences() {
   const [sentence, setSentence] = useState("");
   const { studyText, setStudyText } = useContext(SentenceContext);
-  //const { theme } = useContext(ThemeContext);
 
   const input = useRef();
 

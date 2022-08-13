@@ -9,6 +9,7 @@ export default function useInsertWords() {
   const { setWord } = useContext(WordContext);
   const [inputError, setInputError] = useState(false);
   const { studyText } = useContext(SentenceContext);
+  const [errorNetwork, setNetworkError] = useState(false);
 
   const input = useRef();
 
@@ -31,13 +32,14 @@ export default function useInsertWords() {
         .getWordByWord(uniqueWord)
         .then((data) => {
           setWord([]);
-          setWord(data);
+          setWord(data.data);
         })
         .catch((error) => {
           console.error(error);
+          setNetworkError(true);
         });
     },
-    [setWord]
+    [setWord, setNetworkError]
   );
 
   useEffect(() => {
@@ -50,5 +52,5 @@ export default function useInsertWords() {
     getWord(event.target[0].value);
   };
 
-  return { inputError, input, handleSubmit };
+  return { inputError, input, handleSubmit, errorNetwork };
 }

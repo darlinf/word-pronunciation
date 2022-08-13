@@ -5,11 +5,18 @@
 
   position: absolute;
   right: 5%;
-
+  margin-top: 5px;
   padding: 20px;
   border-radius: 5px 0 5px 5px;
   box-sizing: border-box;
 }
+
+@media only screen and (max-width: 600px) {
+  .setting-container {
+    width: 90%;
+  }
+}
+
 .removeSettingMenu {
   opacity: 0;
   transition: all 500ms ease-in-out;
@@ -26,7 +33,6 @@
 .pitch {
   display: flex;
   justify-content: space-between;
-  width: 300px;
   align-self: center;
   margin-bottom: 10px;
 }
@@ -42,7 +48,7 @@
 input[type="range"] {
   -webkit-appearance: none;
   margin: 5px 0;
-  width: 50%;
+  width: 70%;
 }
 input[type="range"]:focus {
   outline: none;

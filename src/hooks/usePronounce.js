@@ -52,7 +52,9 @@ export default function usePronounce({ pronounce, word, id }) {
   };
 
   const handlerCreateAndEditWord = () => {
-    if (inputText !== pronounce) {
+    console.log({ pronounce: inputText });
+    console.log(id);
+    if (inputText !== pronounce && id !== undefined) {
       editWord(id);
     }
 
@@ -77,5 +79,6 @@ export default function usePronounce({ pronounce, word, id }) {
     edit,
     pronounce,
     inputText,
+    setInputText,
   };
 }

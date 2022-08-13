@@ -100,7 +100,9 @@ export default function WordPronounce({ word, pronounce, id }) {
             <input
               placeholder="pronounce"
               type="text"
-              onChange={(event) => setInputText(event.target.value)}
+              onChange={(event) => {
+                setInputText(event.target.value);
+              }}
               value={inputText}
             />
           ) : (

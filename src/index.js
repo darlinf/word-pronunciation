@@ -4,20 +4,26 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeContextProvider } from "./context/ThemeContext";
-import { BrowserRouter } from "react-router-dom";
+import { SentenceContextProvider } from "./context/SentenceContext";
+import { WordOrSentenceContextProvider } from "./context/WordOrSentenceContext";
+import { WordContextProvider } from "./context/WordContext";
+import { SettingContextProvider } from "./context/SettingContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeContextProvider>
-        <App />
-      </ThemeContextProvider>
-    </BrowserRouter>
+    <ThemeContextProvider>
+      <WordOrSentenceContextProvider>
+        <SentenceContextProvider>
+          <WordContextProvider>
+            <SettingContextProvider>
+              <App />
+            </SettingContextProvider>
+          </WordContextProvider>
+        </SentenceContextProvider>
+      </WordOrSentenceContextProvider>
+    </ThemeContextProvider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

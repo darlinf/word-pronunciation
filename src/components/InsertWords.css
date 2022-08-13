@@ -37,8 +37,9 @@
 }
 .error small {
   font-size: 14px;
-  color: red;
+  color: #ff5b5b;
   position: absolute;
-  top: 93px;
-  padding-left: 2px;
+  top: 150px;
+  border-radius: 0 0 5px 5px;
+  padding: 5px;
 }
