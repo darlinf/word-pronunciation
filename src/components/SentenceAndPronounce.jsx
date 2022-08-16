@@ -7,11 +7,13 @@ import ThemeContext from "../context/ThemeContext";
 import SentenceContext from "../context/SentenceContext";
 import "./SentenceAndPronounce.css";
 import SetShowWordPronounceWord from "../components/SentencePronounceWord";
+import SettingContext from "../context/SettingContext";
 
 export default function SentenceAndPronounce() {
   const [recoding, setRecoding] = useState(null);
   const { theme } = useContext(ThemeContext);
   const { studyText } = useContext(SentenceContext);
+  const { setting } = useContext(SettingContext);
 
   return (
     <>
@@ -26,7 +28,9 @@ export default function SentenceAndPronounce() {
             <Sound
               style={{ fill: "white", cursor: "pointer" }}
               className="sound"
-              onClick={() => speak(studyText)}
+              onClick={() =>
+                speak(studyText, setting.pitch, setting.rate, setting.lang)
+              }
             />
           </div>
           <div className="microphone-container">

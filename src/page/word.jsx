@@ -17,8 +17,6 @@ function Home() {
   const { theme } = useContext(ThemeContext);
   const { choiceWordSentence } = useContext(WordOrSentenceContext);
 
-  console.log(word);
-
   const copyPronounceText = () => {
     navigator.clipboard.writeText(createdClipboardText());
   };

@@ -1,4 +1,3 @@
-import "./App.css";
 import Word from "./page/word";
 import { useContext, useEffect } from "react";
 import ThemeContext from "./context/ThemeContext";

@@ -16,7 +16,8 @@ export default function useInsertWords() {
   const getWord = useCallback(
     (param) => {
       const uniqueWord = param
-        .split(/[\W-\d]/g)
+        //.split(/[\W-\d]/g)
+        .split(" ")
         .filter((x) => x !== "")
         .toString()
         .replace(/,/g, " ");
