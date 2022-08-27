@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:8081/";
+//const apiUrl = "http://localhost:8081/";
 //const apiUrl = "https://test-api-production.up.railway.app/";
+const apiUrl = "https://streaming-premiere-api-production.up.railway.app/";
 
 export const wordService = {
   getWordByWord,
