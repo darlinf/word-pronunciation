@@ -408,6 +408,9 @@ body {
   transition: background .15s ease;
   padding: 2px 4px;
   margin-left: -4px;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #read-content p:hover {

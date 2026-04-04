@@ -524,6 +524,11 @@ function animateSyllables(wrapper, count, totalMs) {
 readContent.addEventListener('click', e => {
   if (state.mode !== 'read') return;
 
+  // Clear any native text selection to prevent UI glitches on mobile
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges();
+  }
+
   // Cancel any running TTS
   if (activeTtsCleanup) { activeTtsCleanup(); activeTtsCleanup = null; }
   if (ttsSupported) window.speechSynthesis.cancel();
