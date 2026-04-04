@@ -44,7 +44,6 @@ const btnThemeDark    = document.getElementById('btn-theme-dark');
 // === Internal tracking ===
 let canvasWrappers   = [];  // div.page-wrapper elements for normal mode
 let readPageAnchors  = [];  // anchor div elements per page in read mode
-let currentPdfUrl    = null; // object URL for PDF file
 
 // === Helpers ===
 function setProgress(pct) { progressBar.style.width = pct + '%'; }
@@ -74,11 +73,16 @@ async function loadPDF(file) {
   showLoading();
   setProgress(10);
 
-  if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
-  currentPdfUrl = URL.createObjectURL(file);
+  // Using FileReader is highly resilient on Safari/iOS compared to file.arrayBuffer() or createObjectURL
+  const arrayBuffer = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(file);
+  });
   setProgress(30);
 
-  const loadingTask = pdfjsLib.getDocument(currentPdfUrl);
+  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
   loadingTask.onProgress = ({ loaded, total }) => {
     if (total) setProgress(30 + Math.round((loaded / total) * 20));
   };
@@ -582,7 +586,6 @@ btnBack.addEventListener('click', () => {
   viewerScreen.classList.remove('active');
   uploadScreen.classList.add('active');
   state.pdfDoc = null;
-  if (currentPdfUrl) { URL.revokeObjectURL(currentPdfUrl); currentPdfUrl = null; }
   canvasContainer.innerHTML  = '';
   readContent.innerHTML      = '';
   canvasWrappers  = [];
