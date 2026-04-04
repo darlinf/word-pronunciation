@@ -1,9 +1,0 @@
-.sentence-word:hover {
-  background-color: red;
-  cursor: pointer;
-  font-size: 30px !important;
-}
-
-.sentence-word-container {
-  display: inline-block;
-}
