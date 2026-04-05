@@ -44,8 +44,6 @@ const btnThemeDark    = document.getElementById('btn-theme-dark');
 // === Internal tracking ===
 let canvasWrappers   = [];  // div.page-wrapper elements for normal mode
 let readPageAnchors  = [];  // anchor div elements per page in read mode
-let normalObserver   = null;
-let readObserver     = null;
 
 // === Helpers ===
 function setProgress(pct) { progressBar.style.width = pct + '%'; }
@@ -95,8 +93,8 @@ async function loadPDF(file) {
     state.currentPage  = 1;
     totalPagesEl.textContent = state.totalPages;
 
-    prepareNormalPages();
-    prepareReadPages();
+    await renderAllPages();
+    await extractAllText();
 
     setProgress(100);
     setTimeout(() => setProgress(0), 600);
@@ -111,144 +109,82 @@ async function loadPDF(file) {
   }
 }
 
-// === Prepare Normal Mode (Lazy) ===
-function prepareNormalPages() {
+// === Render ALL pages (normal mode) ===
+async function renderAllPages() {
   canvasContainer.innerHTML = '';
   canvasWrappers = [];
-  if (normalObserver) normalObserver.disconnect();
 
-  normalObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const wrapper = entry.target;
-        if (wrapper.dataset.rendered === 'false') {
-          renderSinglePage(wrapper);
-        }
-      }
-    });
-  }, { root: normalView, rootMargin: '800px 0px' });
-
-  const containerW = canvasContainer.clientWidth - 32 || 300;
-  const estimatedH = containerW * 1.414; // A4 ratio
+  const containerW = canvasContainer.clientWidth - 32;
 
   for (let i = 1; i <= state.totalPages; i++) {
+    const page      = await state.pdfDoc.getPage(i);
+    const viewport0 = page.getViewport({ scale: 1 });
+    const scale     = Math.min(state.scale, containerW / viewport0.width);
+    const viewport  = page.getViewport({ scale });
+
     const wrapper = document.createElement('div');
-    wrapper.className = 'page-wrapper';
+    wrapper.className  = 'page-wrapper';
     wrapper.dataset.page = String(i);
-    wrapper.dataset.rendered = 'false';
-    wrapper.style.width = containerW + 'px';
-    wrapper.style.height = estimatedH + 'px';
-    wrapper.style.marginBottom = '1.5rem';
-    
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = viewport.width;
+    canvas.height = viewport.height;
+
+    const ctx = canvas.getContext('2d');
+    wrapper.appendChild(canvas);
     canvasContainer.appendChild(wrapper);
     canvasWrappers.push(wrapper);
-    normalObserver.observe(wrapper);
+
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    setProgress(50 + Math.round((i / state.totalPages) * 40));
   }
 
+  // Scroll listener for normal mode
   normalView.addEventListener('scroll', onNormalScroll, { passive: true });
 }
 
-async function renderSinglePage(wrapper) {
-  wrapper.dataset.rendered = 'pending';
-  const pageNum = parseInt(wrapper.dataset.page);
-  try {
-    const page = await state.pdfDoc.getPage(pageNum);
-    const containerW = canvasContainer.clientWidth - 32 || 300;
-    
-    const viewport0 = page.getViewport({ scale: 1 });
-    let renderScale = Math.min(state.scale, containerW / viewport0.width);
-    
-    // Protect iOS limits
-    const DPR = window.devicePixelRatio || 1;
-    if (viewport0.width * renderScale * DPR > 2400) {
-      renderScale = 2400 / (viewport0.width * DPR);
+// Detect current page by scroll position in normal mode
+function onNormalScroll() {
+  const mid = normalView.scrollTop + normalView.clientHeight * 0.4;
+  for (const wrapper of canvasWrappers) {
+    const top    = wrapper.offsetTop;
+    const bottom = top + wrapper.offsetHeight;
+    if (mid >= top && mid < bottom) {
+      const p = parseInt(wrapper.dataset.page);
+      if (p !== state.currentPage) {
+        state.currentPage = p;
+        updatePageIndicator();
+      }
+      break;
     }
-    
-    const viewport = page.getViewport({ scale: renderScale });
-
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width * DPR;
-    canvas.height = viewport.height * DPR;
-    canvas.style.width = viewport.width + 'px';
-    canvas.style.height = viewport.height + 'px';
-    
-    // Apply styling from previous css
-    canvas.style.borderRadius = '8px';
-    canvas.style.boxShadow = '0 8px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05)';
-    canvas.style.display = 'block';
-    canvas.style.animation = 'fadeup .3s ease';
-    canvas.style.maxWidth = '100%';
-    canvas.style.height = 'auto';
-
-    const ctx = canvas.getContext('2d');
-    const transform = DPR !== 1 ? [DPR, 0, 0, DPR, 0, 0] : null;
-
-    wrapper.style.height = 'auto';
-    wrapper.appendChild(canvas);
-
-    await page.render({ canvasContext: ctx, transform, viewport }).promise;
-    wrapper.dataset.rendered = 'true';
-  } catch(e) {
-    console.error('Error render page', pageNum, e);
-    wrapper.dataset.rendered = 'error';
   }
 }
 
-// === Extract text for reading mode (Lazy) ===
-function prepareReadPages() {
+// === Extract text for reading mode ===
+async function extractAllText() {
   readContent.innerHTML = '';
   readPageAnchors = [];
-  if (readObserver) readObserver.disconnect();
 
-  readObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const anchor = entry.target;
-        if (anchor.dataset.extracted === 'false') {
-          extractSinglePageText(anchor);
-        }
-      }
-    });
-  }, { root: readView, rootMargin: '800px 0px' });
+  for (let i = 1; i <= state.pdfDoc.numPages; i++) {
+    const page    = await state.pdfDoc.getPage(i);
+    const content = await page.getTextContent();
 
-  for (let i = 1; i <= state.totalPages; i++) {
+    // Page anchor (used for scrollToPage in read mode + IntersectionObserver)
     const anchor = document.createElement('div');
-    anchor.className = 'read-page-anchor';
+    anchor.className   = 'read-page-anchor';
     anchor.dataset.page = String(i);
-    anchor.dataset.extracted = 'false';
-    anchor.style.minHeight = '150px';
-    anchor.style.visibility = 'visible'; // Overriding previous CSS trick to allow intersection
-    anchor.style.height = 'auto';
-    anchor.style.position = 'relative';
+    readContent.appendChild(anchor);
+    readPageAnchors.push(anchor);
 
+    // Page label
     const label = document.createElement('div');
     label.className = 'read-page-label';
     label.textContent = `Página ${i}`;
-    anchor.appendChild(label);
+    readContent.appendChild(label);
 
-    const txtContainer = document.createElement('div');
-    txtContainer.className = 'read-txt-box';
-    anchor.appendChild(txtContainer);
-
-    readContent.appendChild(anchor);
-    readPageAnchors.push(anchor);
-    readObserver.observe(anchor);
-  }
-
-  readView.addEventListener('scroll', onReadScroll, { passive: true });
-}
-
-async function extractSinglePageText(anchor) {
-  anchor.dataset.extracted = 'pending';
-  const pageNum = parseInt(anchor.dataset.page);
-  const tb = anchor.querySelector('.read-txt-box');
-
-  try {
-    const page = await state.pdfDoc.getPage(pageNum);
-    const content = await page.getTextContent();
-    
+    // Page text
     let pageText = '';
-    let lastY = null;
+    let lastY    = null;
     content.items.forEach(item => {
       if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
         pageText += '\n';
@@ -259,13 +195,11 @@ async function extractSinglePageText(anchor) {
 
     const para = document.createElement('p');
     para.textContent = pageText.trim() || '(Página sin texto)';
-    tb.appendChild(para);
-    anchor.dataset.extracted = 'true';
-  } catch (e) {
-    console.error('Error text page', pageNum, e);
-    tb.innerHTML = '<p>(Error al procesar texto)</p>';
-    anchor.dataset.extracted = 'error';
+    readContent.appendChild(para);
   }
+
+  // Scroll listener for read mode
+  readView.addEventListener('scroll', onReadScroll, { passive: true });
 }
 
 // Detect current page by scroll position in read mode
@@ -668,9 +602,9 @@ btnBack.addEventListener('click', () => {
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
+  resizeTimer = setTimeout(async () => {
     if (state.pdfDoc && canvasWrappers.length) {
-      prepareNormalPages();
+      await renderAllPages();
     }
   }, 350);
 });
