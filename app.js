@@ -4,51 +4,51 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 
 // === State ===
 const state = {
-  pdfDoc:    null,
+  pdfDoc: null,
   currentPage: 1,
-  totalPages:  0,
-  mode:      'normal',
-  fontSize:  16,
+  totalPages: 0,
+  mode: 'normal',
+  fontSize: 16,
   readTheme: 'dark',
-  scale:     1.6,
+  scale: 1.6,
 };
 
 // === DOM References ===
-const uploadScreen    = document.getElementById('upload-screen');
-const viewerScreen    = document.getElementById('viewer-screen');
-const fileInput       = document.getElementById('file-input');
-const dropZone        = document.getElementById('drop-zone');
-const btnBack         = document.getElementById('btn-back');
-const btnNormal       = document.getElementById('btn-normal');
-const btnRead         = document.getElementById('btn-read');
-const readingCtrls    = document.getElementById('reading-controls');
-const btnFontUp       = document.getElementById('btn-font-up');
-const btnFontDown     = document.getElementById('btn-font-down');
-const fontDisplay     = document.getElementById('font-size-display');
-const btnPrev         = document.getElementById('btn-prev');
-const btnNext         = document.getElementById('btn-next');
-const currentPageEl   = document.getElementById('current-page');
-const totalPagesEl    = document.getElementById('total-pages');
+const uploadScreen = document.getElementById('upload-screen');
+const viewerScreen = document.getElementById('viewer-screen');
+const fileInput = document.getElementById('file-input');
+const dropZone = document.getElementById('drop-zone');
+const btnBack = document.getElementById('btn-back');
+const btnNormal = document.getElementById('btn-normal');
+const btnRead = document.getElementById('btn-read');
+const readingCtrls = document.getElementById('reading-controls');
+const btnFontUp = document.getElementById('btn-font-up');
+const btnFontDown = document.getElementById('btn-font-down');
+const fontDisplay = document.getElementById('font-size-display');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+const currentPageEl = document.getElementById('current-page');
+const totalPagesEl = document.getElementById('total-pages');
 const canvasContainer = document.getElementById('canvas-container');
-const readContent     = document.getElementById('read-content');
-const readView        = document.getElementById('read-view');
-const normalView      = document.getElementById('normal-view');
-const pageNav         = document.getElementById('page-nav');
-const loadingOverlay  = document.getElementById('loading-overlay');
-const progressBar     = document.getElementById('progress-bar');
+const readContent = document.getElementById('read-content');
+const readView = document.getElementById('read-view');
+const normalView = document.getElementById('normal-view');
+const pageNav = document.getElementById('page-nav');
+const loadingOverlay = document.getElementById('loading-overlay');
+const progressBar = document.getElementById('progress-bar');
 const fileNameDisplay = document.getElementById('file-name-display');
-const btnThemeLight   = document.getElementById('btn-theme-light');
-const btnThemeSepia   = document.getElementById('btn-theme-sepia');
-const btnThemeDark    = document.getElementById('btn-theme-dark');
+const btnThemeLight = document.getElementById('btn-theme-light');
+const btnThemeSepia = document.getElementById('btn-theme-sepia');
+const btnThemeDark = document.getElementById('btn-theme-dark');
 
 // === Internal tracking ===
-let canvasWrappers   = [];  // div.page-wrapper elements for normal mode
-let readPageAnchors  = [];  // anchor div elements per page in read mode
+let canvasWrappers = [];  // div.page-wrapper elements for normal mode
+let readPageAnchors = [];  // anchor div elements per page in read mode
 
 // === Helpers ===
 function setProgress(pct) { progressBar.style.width = pct + '%'; }
-function showLoading()     { loadingOverlay.classList.remove('hidden'); }
-function hideLoading()     { loadingOverlay.classList.add('hidden'); }
+function showLoading() { loadingOverlay.classList.remove('hidden'); }
+function hideLoading() { loadingOverlay.classList.add('hidden'); }
 
 // === File Handling ===
 fileInput.addEventListener('change', e => {
@@ -88,9 +88,9 @@ async function loadPDF(file) {
   };
 
   try {
-    state.pdfDoc       = await loadingTask.promise;
-    state.totalPages   = state.pdfDoc.numPages;
-    state.currentPage  = 1;
+    state.pdfDoc = await loadingTask.promise;
+    state.totalPages = state.pdfDoc.numPages;
+    state.currentPage = 1;
     totalPagesEl.textContent = state.totalPages;
 
     await renderAllPages();
@@ -117,17 +117,17 @@ async function renderAllPages() {
   const containerW = canvasContainer.clientWidth - 32;
 
   for (let i = 1; i <= state.totalPages; i++) {
-    const page      = await state.pdfDoc.getPage(i);
+    const page = await state.pdfDoc.getPage(i);
     const viewport0 = page.getViewport({ scale: 1 });
-    const scale     = Math.min(state.scale, containerW / viewport0.width);
-    const viewport  = page.getViewport({ scale });
+    const scale = Math.min(state.scale, containerW / viewport0.width);
+    const viewport = page.getViewport({ scale });
 
     const wrapper = document.createElement('div');
-    wrapper.className  = 'page-wrapper';
+    wrapper.className = 'page-wrapper';
     wrapper.dataset.page = String(i);
 
     const canvas = document.createElement('canvas');
-    canvas.width  = viewport.width;
+    canvas.width = viewport.width;
     canvas.height = viewport.height;
 
     const ctx = canvas.getContext('2d');
@@ -147,7 +147,7 @@ async function renderAllPages() {
 function onNormalScroll() {
   const mid = normalView.scrollTop + normalView.clientHeight * 0.4;
   for (const wrapper of canvasWrappers) {
-    const top    = wrapper.offsetTop;
+    const top = wrapper.offsetTop;
     const bottom = top + wrapper.offsetHeight;
     if (mid >= top && mid < bottom) {
       const p = parseInt(wrapper.dataset.page);
@@ -166,12 +166,12 @@ async function extractAllText() {
   readPageAnchors = [];
 
   for (let i = 1; i <= state.pdfDoc.numPages; i++) {
-    const page    = await state.pdfDoc.getPage(i);
+    const page = await state.pdfDoc.getPage(i);
     const content = await page.getTextContent();
 
     // Page anchor (used for scrollToPage in read mode + IntersectionObserver)
     const anchor = document.createElement('div');
-    anchor.className   = 'read-page-anchor';
+    anchor.className = 'read-page-anchor';
     anchor.dataset.page = String(i);
     readContent.appendChild(anchor);
     readPageAnchors.push(anchor);
@@ -184,7 +184,7 @@ async function extractAllText() {
 
     // Page text
     let pageText = '';
-    let lastY    = null;
+    let lastY = null;
     content.items.forEach(item => {
       if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
         pageText += '\n';
@@ -258,7 +258,7 @@ document.addEventListener('keydown', e => {
 
 // === Mode Toggle ===
 btnNormal.addEventListener('click', () => switchMode('normal'));
-btnRead.addEventListener('click',   () => switchMode('read'));
+btnRead.addEventListener('click', () => switchMode('read'));
 
 function switchMode(mode) {
   state.mode = mode;
@@ -313,7 +313,7 @@ function applyTheme(theme) {
 
 btnThemeLight.addEventListener('click', () => applyTheme('light'));
 btnThemeSepia.addEventListener('click', () => applyTheme('sepia'));
-btnThemeDark.addEventListener('click',  () => applyTheme('dark'));
+btnThemeDark.addEventListener('click', () => applyTheme('dark'));
 btnThemeDark.style.outline = '2px solid #7c3aed'; // default
 
 // === Text-to-Speech with syllable highlighting ===
@@ -338,18 +338,18 @@ function getWordRangeAtPoint(x, y) {
   const caret = caretAt(x, y);
   if (!caret || !caret.node || caret.node.nodeType !== Node.TEXT_NODE) return null;
 
-  const text        = caret.node.textContent;
-  const isWordChar  = ch => /[\wÀ-ÿ'-]/.test(ch);
+  const text = caret.node.textContent;
+  const isWordChar = ch => /[\wÀ-ÿ'-]/.test(ch);
   let start = caret.offset;
-  let end   = caret.offset;
+  let end = caret.offset;
 
   while (start > 0 && isWordChar(text[start - 1])) start--;
-  while (end < text.length && isWordChar(text[end]))  end++;
+  while (end < text.length && isWordChar(text[end])) end++;
   if (start === end) return null;
 
   const range = document.createRange();
   range.setStart(caret.node, start);
-  range.setEnd(caret.node,   end);
+  range.setEnd(caret.node, end);
   return range;
 }
 
@@ -367,25 +367,25 @@ function syllabify(word) {
   } else if (w.endsWith('es') && w.length > 3) {
     base = w.slice(0, -2);
     silentESuffix = "es";
-  } else if (w.endsWith('ed') && w.length > 3 && !['t','d'].includes(w[w.length-3])) {
+  } else if (w.endsWith('ed') && w.length > 3 && !['t', 'd'].includes(w[w.length - 3])) {
     base = w.slice(0, -2);
     silentESuffix = "ed";
   }
 
   // 2. Vowel digraphs/trigraphs (longest first)
   const DIGRAPHS = [
-    'ough','augh','eau','igh',
-    'ai','ay','ea','ee','ei','eu','ew','ey',
-    'ie','oa','oe','oi','oo','ou','ow','oy',
-    'au','aw','ue','ui','uy'
+    'ough', 'augh', 'eau', 'igh',
+    'ai', 'ay', 'ea', 'ee', 'ei', 'eu', 'ew', 'ey',
+    'ie', 'oa', 'oe', 'oi', 'oo', 'ou', 'ow', 'oy',
+    'au', 'aw', 'ue', 'ui', 'uy'
   ].sort((a, b) => b.length - a.length);
 
   // 3. Legal syllable onsets (for splitting consonant clusters)
   const ONSETS = new Set([
-    'bl','br','ch','cl','cr','dr','dw','fl','fr','gl','gr',
-    'kl','kn','kw','ph','pl','pr','qu','sc','sh','sk','sl',
-    'sm','sn','sp','sq','st','sw','th','tr','tw','wh','wr',
-    'scr','spl','spr','str','shr','thr','sch'
+    'bl', 'br', 'ch', 'cl', 'cr', 'dr', 'dw', 'fl', 'fr', 'gl', 'gr',
+    'kl', 'kn', 'kw', 'ph', 'pl', 'pr', 'qu', 'sc', 'sh', 'sk', 'sl',
+    'sm', 'sn', 'sp', 'sq', 'st', 'sw', 'th', 'tr', 'tw', 'wh', 'wr',
+    'scr', 'spl', 'spr', 'str', 'shr', 'thr', 'sch'
   ]);
 
   const isVowel = (c, pos) => 'aeiou'.includes(c) || (c === 'y' && pos > 0);
@@ -419,11 +419,11 @@ function syllabify(word) {
   const splits = [0];
   for (let n = 0; n < nuclei.length - 1; n++) {
     const cStart = nuclei[n].end;
-    const cEnd   = nuclei[n + 1].start;
-    const cons   = base.slice(cStart, cEnd);
-    
+    const cEnd = nuclei[n + 1].start;
+    const cons = base.slice(cStart, cEnd);
+
     let splitAt = cStart; // default: V-CV (after vowel)
-    
+
     if (cons.length === 1) {
       // V-CV: usually split before single consonant (ra-ven)
       splitAt = cStart;
@@ -440,7 +440,7 @@ function syllabify(word) {
     }
     splits.push(splitAt);
   }
-  
+
   // Use the silent suffix to attach to the last piece
   const finalCut = base.length;
   splits.push(finalCut);
@@ -462,32 +462,32 @@ function syllabify(word) {
 // --- Inject syllable <span>s into the DOM for just the clicked word ---
 // Returns a cleanup() that fully restores the original text node.
 function injectSyllableSpans(wordRange, syllables) {
-  const textNode   = wordRange.startContainer;
-  const startOff   = wordRange.startOffset;
-  const endOff     = wordRange.endOffset;
-  const parent     = textNode.parentNode;
+  const textNode = wordRange.startContainer;
+  const startOff = wordRange.startOffset;
+  const endOff = wordRange.endOffset;
+  const parent = textNode.parentNode;
   if (!parent) return null;
 
-  const fullText  = textNode.textContent;
-  const before    = fullText.slice(0, startOff);
-  const after     = fullText.slice(endOff);
+  const fullText = textNode.textContent;
+  const before = fullText.slice(0, startOff);
+  const after = fullText.slice(endOff);
 
   // Build wrapper with one <span> per syllable
   const wrapper = document.createElement('span');
   wrapper.className = 'tts-word';
   syllables.forEach(syl => {
     const s = document.createElement('span');
-    s.className  = 'tts-syllable';
+    s.className = 'tts-syllable';
     s.textContent = syl;
     wrapper.appendChild(s);
   });
 
   // Replace the text node with: beforeText + wrapper + afterText
   const beforeNode = before ? document.createTextNode(before) : null;
-  const afterNode  = after  ? document.createTextNode(after)  : null;
+  const afterNode = after ? document.createTextNode(after) : null;
   if (beforeNode) parent.insertBefore(beforeNode, textNode);
   parent.insertBefore(wrapper, textNode);
-  if (afterNode)  parent.insertBefore(afterNode,  textNode);
+  if (afterNode) parent.insertBefore(afterNode, textNode);
   parent.removeChild(textNode);
 
   let cleaned = false;
@@ -502,16 +502,16 @@ function injectSyllableSpans(wordRange, syllables) {
         wrapper.parentNode.removeChild(wrapper);
       }
       if (beforeNode?.parentNode) beforeNode.parentNode.removeChild(beforeNode);
-      if (afterNode?.parentNode)  afterNode.parentNode.removeChild(afterNode);
+      if (afterNode?.parentNode) afterNode.parentNode.removeChild(afterNode);
     }
   };
 }
 
 // --- Animate syllables: active (bright) → done (soft) over totalMs ---
 function animateSyllables(wrapper, count, totalMs) {
-  const spans    = wrapper.querySelectorAll('.tts-syllable');
+  const spans = wrapper.querySelectorAll('.tts-syllable');
   const msPerSyl = Math.max(60, totalMs / count);
-  const timers   = [];
+  const timers = [];
 
   for (let i = 0; i < count; i++) {
     timers.push(setTimeout(() => {
@@ -545,18 +545,18 @@ readContent.addEventListener('click', e => {
   const word = wordRange.toString().trim();
   if (!word) return;
 
-  const syllables  = syllabify(word);
-  const domResult  = injectSyllableSpans(wordRange, syllables);
+  const syllables = syllabify(word);
+  const domResult = injectSyllableSpans(wordRange, syllables);
   if (!domResult) return;
 
   // Estimate total duration: ~210 ms per syllable at rate 0.95
   const estimatedMs = syllables.length * 210;
   let stopAnim = null;
 
-  const utt   = new SpeechSynthesisUtterance(word);
-  utt.lang    = 'en-US';
-  utt.rate    = 0.95;
-  utt.pitch   = 1;
+  const utt = new SpeechSynthesisUtterance(word);
+  utt.lang = 'en-US';
+  utt.rate = 0.95;
+  utt.pitch = 1;
 
   utt.onstart = () => {
     stopAnim = animateSyllables(domResult.wrapper, syllables.length, estimatedMs);
@@ -568,7 +568,7 @@ readContent.addEventListener('click', e => {
     activeTtsCleanup = null;
   };
 
-  utt.onend   = cleanup;
+  utt.onend = cleanup;
   utt.onerror = cleanup;
   activeTtsCleanup = cleanup;
 
@@ -586,9 +586,9 @@ btnBack.addEventListener('click', () => {
   viewerScreen.classList.remove('active');
   uploadScreen.classList.add('active');
   state.pdfDoc = null;
-  canvasContainer.innerHTML  = '';
-  readContent.innerHTML      = '';
-  canvasWrappers  = [];
+  canvasContainer.innerHTML = '';
+  readContent.innerHTML = '';
+  canvasWrappers = [];
   readPageAnchors = [];
   fileInput.value = '';
   pageNav.classList.add('hidden');
@@ -608,3 +608,94 @@ window.addEventListener('resize', () => {
     }
   }, 350);
 });
+
+// === Dictation ===
+const btnDictate = document.getElementById('btn-dictate');
+const dictationPanel = document.getElementById('dictation-panel');
+const btnCloseDictation = document.getElementById('btn-close-dictation');
+const dictationText = document.getElementById('dictation-text');
+
+let dictationRecognition;
+let isDictating = false;
+let finalDictationTranscript = '';
+
+if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  dictationRecognition = new SpeechRecognition();
+  dictationRecognition.continuous = true;
+  dictationRecognition.interimResults = true;
+  dictationRecognition.lang = 'en-US'; // English
+
+  dictationRecognition.onstart = () => {
+    isDictating = true;
+    btnDictate.classList.add('listening');
+    dictationPanel.classList.add('show');
+  };
+
+  dictationRecognition.onresult = (event) => {
+    let interimTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalDictationTranscript += event.results[i][0].transcript + ' ';
+      } else {
+        interimTranscript += event.results[i][0].transcript;
+      }
+    }
+    dictationText.innerHTML = finalDictationTranscript + '<span class="dictation-interim">' + interimTranscript + '</span>';
+    dictationText.scrollTop = dictationText.scrollHeight;
+  };
+
+  dictationRecognition.onerror = (event) => {
+    console.error('Speech recognition error:', event.error);
+    if (event.error === 'not-allowed') {
+      stopDictation();
+      alert('Permiso de micrófono denegado para el dictado.');
+    }
+  };
+
+  dictationRecognition.onend = () => {
+    if (isDictating) {
+      // Auto-restart if still supposed to be listening (avoids 15-second cutoff in some browsers)
+      try {
+        dictationRecognition.start();
+      } catch (e) {
+        console.error('Error restarting recognition:', e);
+      }
+    } else {
+      btnDictate.classList.remove('listening');
+    }
+  };
+
+  btnDictate.addEventListener('click', () => {
+    if (isDictating) {
+      stopDictation();
+    } else {
+      startDictation();
+    }
+  });
+
+  btnCloseDictation.addEventListener('click', () => {
+    stopDictation();
+    dictationPanel.classList.remove('show');
+  });
+
+} else {
+  btnDictate.style.display = 'none';
+  console.warn('Speech Recognition API no es soportada en este navegador.');
+}
+
+function startDictation() {
+  finalDictationTranscript = '';
+  dictationText.innerHTML = '';
+  try {
+    dictationRecognition.start();
+  } catch (e) {
+    console.error('Error starting recognition:', e);
+  }
+}
+
+function stopDictation() {
+  isDictating = false;
+  dictationRecognition.stop();
+  btnDictate.classList.remove('listening');
+}

@@ -10,27 +10,6 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
-  <h1>ddddd</h1>
 </head>
 
 
@@ -178,6 +157,23 @@
       </button>
     </div>
 
+  </div>
+
+  <!-- Floating Dictation -->
+  <button id="btn-dictate" class="floating-btn" title="Iniciar Dictado">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" y1="19" x2="12" y2="23"/>
+      <line x1="8" y1="23" x2="16" y2="23"/>
+    </svg>
+  </button>
+  <div id="dictation-panel" class="dictation-panel">
+    <div class="dictation-header">
+      <span>Transcripción en vivo</span>
+      <button id="btn-close-dictation" class="close-btn" title="Cerrar">&times;</button>
+    </div>
+    <div id="dictation-text" class="dictation-text"></div>
   </div>
 
   <!-- PDF.js CDN -->
