@@ -182,20 +182,73 @@ async function extractAllText() {
     label.textContent = `Página ${i}`;
     readContent.appendChild(label);
 
-    // Page text
-    let pageText = '';
+    // Page text: Improved Extraction to conserve format
     let lastY = null;
-    content.items.forEach(item => {
-      if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
-        pageText += '\n';
+    let lastX = null;
+    let lastWidth = 0;
+
+    // Sort items (Y descending -> Top to Bottom, X ascending -> Left to Right)
+    const items = content.items.slice().sort((a, b) => {
+      const yA = a.transform[5];
+      const yB = b.transform[5];
+      if (Math.abs(yA - yB) > 5) {
+        return yB - yA;
       }
-      pageText += item.str;
-      lastY = item.transform[5];
+      return a.transform[4] - b.transform[4];
     });
 
-    const para = document.createElement('p');
-    para.textContent = pageText.trim() || '(Página sin texto)';
-    readContent.appendChild(para);
+    let currentParagraph = '';
+    const paragraphs = [];
+
+    items.forEach(item => {
+      // Estimate char height or default to 12
+      const charHeight = Math.abs(item.transform[3]) || 12;
+      const x = item.transform[4];
+      const y = item.transform[5];
+      
+      if (lastY !== null) {
+        const gapY = Math.abs(y - lastY);
+        
+        // If vertical gap is larger than ~1.5 lines, it's a new paragraph
+        if (gapY > charHeight * 1.5) {
+          if (currentParagraph.trim()) paragraphs.push(currentParagraph);
+          currentParagraph = '';
+        } 
+        // If it's a new line but close to previous, keep a newline string
+        else if (gapY > 5) {
+          currentParagraph += '\n';
+        } 
+        // Same line, check horizontal spacing
+        else {
+          const gapX = x - (lastX + lastWidth);
+          // If spacing is significant enough, insert a space explicitly
+          if (gapX > charHeight * 0.2) {
+            currentParagraph += ' ';
+          }
+        }
+      }
+      
+      currentParagraph += item.str;
+      lastY = y;
+      lastX = x;
+      lastWidth = item.width || 0;
+    });
+
+    if (currentParagraph.trim()) paragraphs.push(currentParagraph);
+
+    // Append text to DOM
+    if (paragraphs.length === 0) {
+      const para = document.createElement('p');
+      para.textContent = '(Página sin texto)';
+      readContent.appendChild(para);
+    } else {
+      paragraphs.forEach(text => {
+        const para = document.createElement('p');
+        // This leverages white-space: pre-wrap from CSS to respect \n
+        para.textContent = text.trim();
+        readContent.appendChild(para);
+      });
+    }
   }
 
   // Scroll listener for read mode
