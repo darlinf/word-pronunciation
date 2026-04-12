@@ -11,6 +11,7 @@ const state = {
   fontSize: 16,
   readTheme: 'dark',
   scale: 1.6,
+  currentFileName: '',
 };
 
 // === DOM References ===
@@ -67,6 +68,7 @@ dropZone.addEventListener('click', () => fileInput.click());
 
 // === Load PDF ===
 async function loadPDF(file) {
+  state.currentFileName = file.name;
   fileNameDisplay.textContent = file.name;
   uploadScreen.classList.remove('active');
   viewerScreen.classList.add('active');
@@ -90,7 +92,12 @@ async function loadPDF(file) {
   try {
     state.pdfDoc = await loadingTask.promise;
     state.totalPages = state.pdfDoc.numPages;
-    state.currentPage = 1;
+    
+    const savedPage = localStorage.getItem('pdf-page-' + state.currentFileName);
+    state.currentPage = savedPage ? parseInt(savedPage, 10) : 1;
+    if (isNaN(state.currentPage) || state.currentPage < 1 || state.currentPage > state.totalPages) {
+      state.currentPage = 1;
+    }
     totalPagesEl.textContent = state.totalPages;
 
     await renderAllPages();
@@ -102,6 +109,10 @@ async function loadPDF(file) {
 
     pageNav.classList.remove('hidden');
     updatePageIndicator();
+
+    if (state.currentPage > 1) {
+      setTimeout(() => scrollToPage(state.currentPage, 'instant'), 50);
+    }
   } catch (err) {
     console.error('Error loading PDF:', err);
     hideLoading();
@@ -153,6 +164,7 @@ function onNormalScroll() {
       const p = parseInt(wrapper.dataset.page);
       if (p !== state.currentPage) {
         state.currentPage = p;
+        if (state.currentFileName) localStorage.setItem('pdf-page-' + state.currentFileName, p);
         updatePageIndicator();
       }
       break;
@@ -263,6 +275,7 @@ function onReadScroll() {
       const p = parseInt(readPageAnchors[i].dataset.page);
       if (p !== state.currentPage) {
         state.currentPage = p;
+        if (state.currentFileName) localStorage.setItem('pdf-page-' + state.currentFileName, p);
         updatePageIndicator();
       }
       break;
@@ -278,16 +291,16 @@ function updatePageIndicator() {
 }
 
 // === Navigation (scroll to page) ===
-function scrollToPage(pageNum) {
+function scrollToPage(pageNum, behavior = 'smooth') {
   if (state.mode === 'normal') {
     const wrapper = canvasWrappers[pageNum - 1];
     if (wrapper) {
-      normalView.scrollTo({ top: wrapper.offsetTop - 12, behavior: 'smooth' });
+      normalView.scrollTo({ top: wrapper.offsetTop - 12, behavior });
     }
   } else {
     const anchor = readPageAnchors[pageNum - 1];
     if (anchor) {
-      readView.scrollTo({ top: anchor.offsetTop - 8, behavior: 'smooth' });
+      readView.scrollTo({ top: anchor.offsetTop - 8, behavior });
     }
   }
 }
@@ -639,6 +652,7 @@ btnBack.addEventListener('click', () => {
   viewerScreen.classList.remove('active');
   uploadScreen.classList.add('active');
   state.pdfDoc = null;
+  state.currentFileName = '';
   canvasContainer.innerHTML = '';
   readContent.innerHTML = '';
   canvasWrappers = [];
