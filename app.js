@@ -51,6 +51,55 @@ function setProgress(pct) { progressBar.style.width = pct + '%'; }
 function showLoading() { loadingOverlay.classList.remove('hidden'); }
 function hideLoading() { loadingOverlay.classList.add('hidden'); }
 
+// === IndexedDB Setup ===
+const DB_NAME = 'pdf-viewer-db';
+const STORE_NAME = 'pdf-store';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = (e) => {
+      e.target.result.createObjectStore(STORE_NAME);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveFileToDB(name, arrayBuffer) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put({ name, data: arrayBuffer }, 'last-pdf');
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function loadFileFromDB() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.get('last-pdf');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// Auto-load last PDF on startup
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const saved = await loadFileFromDB();
+    if (saved && saved.name && saved.data) {
+      await loadPDFFromArrayBuffer(saved.name, saved.data);
+    }
+  } catch (err) {
+    console.log('No prev PDF or error loading:', err);
+  }
+});
+
 // === File Handling ===
 fileInput.addEventListener('change', e => {
   if (e.target.files[0]) loadPDF(e.target.files[0]);
@@ -82,6 +131,22 @@ async function loadPDF(file) {
     reader.onerror = () => reject(reader.error);
     reader.readAsArrayBuffer(file);
   });
+  
+  try {
+    await saveFileToDB(file.name, arrayBuffer);
+  } catch(e) {
+    console.error("No se pudo guardar el PDF en IndexedDB:", e);
+  }
+
+  await loadPDFFromArrayBuffer(file.name, arrayBuffer);
+}
+
+async function loadPDFFromArrayBuffer(name, arrayBuffer) {
+  state.currentFileName = name;
+  fileNameDisplay.textContent = name;
+  uploadScreen.classList.remove('active');
+  viewerScreen.classList.add('active');
+  showLoading();
   setProgress(30);
 
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
@@ -369,7 +434,9 @@ btnFontDown.addEventListener('click', () => {
 // === Reading Themes ===
 function applyTheme(theme) {
   state.readTheme = theme;
+  const isHidden = readView.classList.contains('hidden');
   readView.className = 'view-container';
+  if (isHidden) readView.classList.add('hidden');
   if (theme !== 'dark') readView.classList.add(theme);
 
   [btnThemeLight, btnThemeSepia, btnThemeDark].forEach(b => b.style.outline = '');
