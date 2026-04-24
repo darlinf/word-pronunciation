@@ -41,6 +41,7 @@ const fileNameDisplay = document.getElementById('file-name-display');
 const btnThemeLight = document.getElementById('btn-theme-light');
 const btnThemeSepia = document.getElementById('btn-theme-sepia');
 const btnThemeDark = document.getElementById('btn-theme-dark');
+const phoneticTooltip = document.getElementById('phonetic-tooltip');
 
 // === Internal tracking ===
 let canvasWrappers = [];  // div.page-wrapper elements for normal mode
@@ -671,6 +672,7 @@ readContent.addEventListener('click', e => {
   // Cancel any running TTS
   if (activeTtsCleanup) { activeTtsCleanup(); activeTtsCleanup = null; }
   if (ttsSupported) window.speechSynthesis.cancel();
+  phoneticTooltip.classList.remove('show');
 
   const wordRange = getWordRangeAtPoint(e.clientX, e.clientY);
   if (!wordRange) return;
@@ -681,6 +683,28 @@ readContent.addEventListener('click', e => {
   const syllables = syllabify(word);
   const domResult = injectSyllableSpans(wordRange, syllables);
   if (!domResult) return;
+
+  // Show Phonetic Tooltip via API
+  const cleanWord = word.replace(/[^\w'-]/g, '').toLowerCase();
+  if (cleanWord) {
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data[0].phonetics) {
+          const validPhonetic = data[0].phonetics.find(p => p.text);
+          if (validPhonetic) {
+            phoneticTooltip.textContent = validPhonetic.text;
+            const rect = domResult.wrapper.getBoundingClientRect();
+            phoneticTooltip.style.left = `${rect.left + window.scrollX + (rect.width / 2)}px`;
+            phoneticTooltip.style.top = `${rect.top + window.scrollY - 35}px`;
+            phoneticTooltip.classList.remove('hidden');
+            void phoneticTooltip.offsetWidth; // Force reflow
+            phoneticTooltip.classList.add('show');
+          }
+        }
+      })
+      .catch(err => console.log('Dictionary API error:', err));
+  }
 
   // Estimate total duration: ~210 ms per syllable at rate 0.95
   const estimatedMs = syllables.length * 210;
@@ -699,6 +723,7 @@ readContent.addEventListener('click', e => {
     if (stopAnim) stopAnim();
     domResult.cleanup();
     activeTtsCleanup = null;
+    phoneticTooltip.classList.remove('show');
   };
 
   utt.onend = cleanup;

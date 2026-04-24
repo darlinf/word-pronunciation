@@ -565,3 +565,28 @@ body {
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* === PHONETIC TOOLTIP === */
+.phonetic-tooltip {
+  position: absolute;
+  background: rgba(15, 15, 20, 0.95);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 10px);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+}
+.phonetic-tooltip.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
